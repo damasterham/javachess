@@ -5,26 +5,30 @@ import java.util.Map;
 
 //Created by DaMasterHam on 09-09-2016.
 //
-public class LetterMap
+public class CharIntMap
 {
     private static final int SIZE = 8;
 
-    public char getChar(int i)
+    public static char getChar(int i)
     {
         if (i >= 0 && i < SIZE)
             return (char)(97 + i);
         return 0;
     }
 
-    public int getIndex(char ch)
+    public static int getIndex(char ch)
     {
         if (ch <= 'h' && ch >='a')
-            return 'h' - ch;
+            return ch - 'a';
         else if (ch <= 'H' && ch>='A')
-            return 'H' - ch;
+            return ch - 'A';
         return -1;
     }
 
+    public static int getSize()
+    {
+        return SIZE;
+    }
 
 
 //    private static Map<Character,Integer> letterMap = new HashMap<>();
