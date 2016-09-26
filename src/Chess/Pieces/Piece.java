@@ -16,7 +16,7 @@ public abstract class Piece implements IMovable
     //private Board board;
     private String name;
     private String symbol;
-    private boolean direction;
+    private boolean direction; // only for pawns
     private String color;
 
     protected Point point;

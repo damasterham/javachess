@@ -47,15 +47,15 @@ public class Player
     }
 
     //Could from be a piece object reference?
-    public void movePiece(Board board, Point from, Point to)
-    {
-        Piece p;
-        boolean moveSucces;
-
-        p = board.getPiece(from);
-        board.movePiece(p, to);
-
-        //SPECIAL CASE FOR PAWN
-//         = p.move(to, board);
-    }
+//    public void movePiece(Board board, Point from, Point to)
+//    {
+//        Piece p;
+//        boolean moveSucces;
+//
+//        p = board.getPiece(from);
+//        board.movePiece(p, to);
+//
+//        //SPECIAL CASE FOR PAWN
+////         = p.move(to, board);
+//    }
 }

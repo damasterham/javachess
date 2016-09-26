@@ -1,7 +1,9 @@
 package Chess;
 
 import Chess.Pieces.Piece;
+import sun.security.tools.policytool.PolicyTool;
 
+import java.nio.file.attribute.PosixFileAttributes;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,15 +30,9 @@ public class Board
     {
         for (char key : LetterMap.getMap().keySet())
         {
-            for (int i = 1; i <= SIZE; i++)
-            {
-                System.out.print(" " + key + i +" ");
-            }
             System.out.println();
         }
     }
-
-
 
 
     public void setPiece(Piece piece, Point position)
@@ -44,6 +40,8 @@ public class Board
         piece.setPosition(position);
         grid[position.getX()][position.getY()] = piece;
     }
+
+
     private void attack(Piece attacker, Piece defender)
     {
         outOfPlay.add(defender);
@@ -74,30 +72,57 @@ public class Board
         return (grid[pos.getX()][pos.getY()] != null);
     }
 
+    public boolean isObstructed(Piece mover, Point to)
+    {
+        List<Point> movement;
+
+        movement = mover.getPosition().getPointsBetween(to);
+
+        for (Point p : movement)
+        {
+            if (hasPiece(p))
+                return true;
+        }
+
+        return false;
+    }
 
     public void movePiece(Piece piece, Point to)
     {
-        Piece spot;
+        remove(piece.getPosition());
 
-        spot = this.getPiece(to);
-
-        // Natural move
-        if (piece.isValidMove(to) && spot == null)
-        {
-            setPiece(piece, to);
-        }
-        // Attack
-        else if (piece.isValidMove(to) && spot != null)
-        {
-            attack(piece, spot);
-        }
-
+        setPiece(piece, to);
     }
+//    public void movePiece(Piece piece, Point to)
+//    {
+//        Piece spot;
+//
+//        spot = this.getPiece(to);
+//
+//        // Natural move
+//        if (piece.isValidMove(to) && spot == null)
+//        {
+//            setPiece(piece, to);
+//        }
+//        // Attack
+//        else if (piece.isValidMove(to) && spot != null)
+//        {
+//            attack(piece, spot);
+//        }
+//
+//    }
 
     public void print()
     {
+        System.out.print("#");
+        for (char key : LetterMap.getMap().keySet())
+        {
+            System.out.print(key);
+        }
+        
         for (int i = 0; i < SIZE; i++)
         {
+            System.out.print(i+1);
             for (int j = 0; j < SIZE; j++)
             {
                 Piece p = getPiece(new Point(i,j));

@@ -2,25 +2,35 @@ package Chess.Pieces;//
 
 import Chess.Board;
 import Chess.Point;
+import sun.text.CodePointIterator;
+
+import java.util.List;
 
 //Created by DaMasterHam on 20-09-2016.
 //
-public class Queen extends Piece
+public class Tower extends Piece
 {
-    private static final String NAME = "Queen";
+    private static final String NAME = "Tower";
 
-    public Queen(String color, boolean direction)
+    public Tower(String color, boolean direction)
     {
         super(NAME, NAME.substring(0,1), color, direction);
+
     }
 
-    public boolean isValidMove(Point point)
+    private boolean onlyOneDiffAxis(int x1, int x2, int y1, int y2)
     {
-        Point diff = point.getDiff(point);
-
-        return ((diff.getY() != 0 && diff.getX() == 0) || (diff.getY() == 0 &&  diff.getX() != 0));
+        return x1 == x2 && y1 != y2;
     }
 
+
+
+    public boolean isValidMove(Point to)
+    {
+        return onlyOneDiffAxis(to.getX(), point.getX(), to.getY(), point.getY())
+                || onlyOneDiffAxis(to.getY(), point.getY(), to.getX(), point.getX());
+        //return ((to.getX() == point.getX() && to.getY() != point.getY()) || (to.getY() == point.getY() &&  to.getX() != point.getX()));
+    }
 //    public boolean move(Point to, Board board)
 //    {
 //        // Checks

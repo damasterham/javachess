@@ -1,9 +1,8 @@
 package Chess;
 
 import Chess.Pieces.Piece;
-import Chess.Pieces.Queen;
+import Chess.Pieces.Tower;
 
-import java.util.Random;
 import java.util.Scanner;
 
 //Created by DaMasterHam on 08-09-2016.
@@ -55,6 +54,34 @@ public class Game
         System.out.println(p1.getName() + " is " + p1.getColor() + " & " + p2.getName() + " is " + p2.getColor());
     }
 
+
+    private static Point moveWish(Player player, Scanner read, Point to, Piece piece)
+    {
+        System.out.print("Move: ");
+        if (piece != null && player.owns(piece) && read.hasNext())
+        {
+            String input = read.next();
+
+            to = new Point(input);
+        }
+        return to;
+    }
+
+    private static Piece takePiece(Board board, Scanner read, Piece piece)
+    {
+        Point from;
+        System.out.print("Take piece: ");
+        if (read.hasNext())
+        {
+            String input = read.next();
+
+            from = new Point(input);
+            piece = board.getPiece(from);
+        }
+        return piece;
+    }
+
+
     private static void playerTurn(Player player, Board board, Scanner read)
     {
         while (player.isTurn())
@@ -63,35 +90,48 @@ public class Game
             Point to = null;
             Piece piece = null;
 
-            if (read.hasNext())
-            {
-                System.out.print("Take piece: ");
-                String input = read.next();
+            // Try picking up a piece from an area
+            piece = takePiece(board, read, piece);
 
-                from = new Point(input);
-                piece = board.getPiece(from);
-            }
-            if (piece != null && player.owns(piece) && read.hasNext())
-            {
-                System.out.print("Move: ");
-                String input = read.next();
+            // Get position player wishes to move to
+            to = moveWish(player, read, to, piece);
 
-                to = new Point(input);
-            }
-            if (board.hasPiece(to))
+            //Valid piece move
+            if (piece.isValidMove(to))
             {
-                Piece defender = board.getPiece(to);
-
-                if (player.owns(defender))
+                if (board.isObstructed(piece, to))
                 {
-                    System.out.print("Your " + defender.getName() + " is in that spot");
+                    // Cannot move
+                    System.out.println("There are pieces in the way,"
+                                        + "you cannot move to this position");
+
+
                 }
                 else
                 {
-                    board.remove(defender);
+                    // Attack
+                    if (board.hasPiece(to))
+                    {
+                        Piece defender = board.getPiece(to);
+
+                        if (player.owns(defender))
+                        {
+                            System.out.print("Your " + defender.getName() + " is in that spot");
+                        }
+                        else
+                        {
+                            board.remove(defender);
+                        }
+                    }
+
+                    board.movePiece(piece, to);
                     player.setTurn(false);
                 }
             }
+
+
+
+
         }
     }
 
@@ -109,8 +149,8 @@ public class Game
 
         board.getLetterMap();
 
-        board.setPiece(new Queen("White", true), new Point("a1"));
-        board.setPiece(new Queen("Black", false), new Point("h8"));
+        board.setPiece(new Tower("White", true), new Point("a1"));
+        board.setPiece(new Tower("Black", false), new Point("h8"));
 
         int i = 0;
         while (i < 5)

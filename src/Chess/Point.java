@@ -1,7 +1,9 @@
 
 package Chess;//
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 //Created by DaMasterHam on 09-09-2016.
@@ -59,7 +61,7 @@ public class Point
         return y;
     }
 
-    public void setY(int y)
+       public void setY(int y)
     {
         this.y = y;
     }
@@ -69,10 +71,55 @@ public class Point
         this.y = LetterMap.get(letter);
     }
 
-    public Point getDiff(Point other)
+
+    public List<Point> getPointsBetween(Point to)
     {
-        return new Point(this.x - other.x, this.y -other.y);
+        List<Point> list = new ArrayList<Point>();
+        int steps;
+
+        Point diff = getDiff(to);
+
+        int x = this.x;
+        int y = this.y;
+        int xInc;
+        int yInc;
+
+        steps = getSteps(diff);
+        xInc = (int)getIncrement(diff.getX(),steps);
+        yInc = (int)getIncrement(diff.getY(),steps);
+
+        for (int i = 0; i < steps; i++)
+        {
+            x += xInc;
+            y += yInc;
+
+            list.add(new Point(x,y));
+        }
+        return list;
     }
 
+
+
+    private Point getDiff(Point other)
+    {
+        return new Point(other.getX() - x, other.getY() - y);
+    }
+
+    private int getSteps(Point other)
+    {
+        if (other.getX() > other.getY())
+            return other.getX();
+        else
+            return other.getY();
+    }
+
+    private float getIncrement(int value, int steps)
+    {
+        return value / (float) steps;
+    }
+//    public double getSlope(Point other)
+//    {
+//        return  (double)(other.getY() - y) / (double)(other.getX() - x);
+//    }
 
 }
