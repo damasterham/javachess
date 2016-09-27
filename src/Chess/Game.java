@@ -12,6 +12,9 @@ public class Game
 
     private static void setPlayers(Scanner read, Player p1, Player p2)
     {
+        p1.setName("Rick");
+        p2.setName("Morty");
+
         while (p1.getName() == null || p2.getName() == null)
         {
             System.out.print("Player 1: ");
@@ -32,11 +35,6 @@ public class Game
         p2.setTurn(false);
     }
 
-    private static void changeTurns(Player p1, Player p2)
-    {
-        p1.setTurn(!p1.isTurn());
-        p2.setTurn(!p2.isTurn());
-    }
 
     private static void setColors(Player p1, Player p2)
     {
@@ -55,10 +53,10 @@ public class Game
     }
 
 
-    private static Point moveWish(Player player, Scanner read, Point to, Piece piece)
+    private static Point desiredMove(Player player, Scanner read, Point to, Piece piece)
     {
-        System.out.print("Move: ");
-        if (piece != null && player.owns(piece) && read.hasNext())
+        System.out.print("Move to: ");
+        if (read.hasNext())
         {
             String input = read.next();
 
@@ -67,71 +65,89 @@ public class Game
         return to;
     }
 
-    private static Piece takePiece(Board board, Scanner read, Piece piece)
+
+    private static Point desiredPick(Scanner read)
     {
-        Point from;
-        System.out.print("Take piece: ");
+        Point from = null;
+
+        System.out.print("Take piece from: ");
         if (read.hasNext())
         {
             String input = read.next();
 
             from = new Point(input);
-            piece = board.getPiece(from);
         }
-        return piece;
+        return from;
     }
 
 
     private static void playerTurn(Player player, Board board, Scanner read)
     {
+        // Loops whilst it is the players turn
         while (player.isTurn())
         {
             Point from = null;
             Point to = null;
             Piece piece = null;
 
-            // Try picking up a piece from an area
-            piece = takePiece(board, read, piece);
+            // Select a point
+            from = desiredPick(read);
 
-            // Get position player wishes to move to
-            to = moveWish(player, read, to, piece);
+            // Get piece from point
+            piece = board.getPiece(from);
 
-            //Valid piece move
-            if (piece.isValidMove(to))
+            // Check if there is piece
+            if (piece != null)
             {
-                if (board.isObstructed(piece, to))
+                // and if that piece is owned by the player
+                if (player.owns(piece))
                 {
-                    // Cannot move
-                    System.out.println("There are pieces in the way,"
-                                        + "you cannot move to this position");
+                    // Get for desired move
+                    to = desiredMove(player, read, to, piece);
 
+                    // The desired moved is within the movement restrictions of the piece
+                    if (piece.isValidMove(to)) {
+                        // Checks each point between the piece and desired position
+                        if (board.isObstructed(piece, to)) {
+                            // If obstructed, Cannot move
+                            System.out.println("There are pieces in the way,"
+                                    + "you cannot move to this position");
+                        } else {
+                            // If there is a piece at the desired position
+                            if (board.hasPiece(to)) {
+                                Piece defender = board.getPiece(to);
+
+                                // And that piece is owned by the player
+                                if (player.owns(defender)) {
+
+                                    System.out.print("Your " + defender.getName() + " is in that spot");
+                                }
+                                // If owned by the Opponent
+                                else {
+                                    // Remove the piece from play
+                                    board.remove(defender);
+                                    System.out.println("You took " + defender.getName()
+                                            + " at " + defender.getPosition().toChess());
+                                }
+                            }
+
+                            // Lastly the player piece is moved to the desired positon
+                            board.movePiece(piece, to);
+                            // And it is no longer the players turn
+                            player.setTurn(false);
+                        }
+                    }
 
                 }
                 else
                 {
-                    // Attack
-                    if (board.hasPiece(to))
-                    {
-                        Piece defender = board.getPiece(to);
-
-                        if (player.owns(defender))
-                        {
-                            System.out.print("Your " + defender.getName() + " is in that spot");
-                        }
-                        else
-                        {
-                            board.remove(defender);
-                        }
-                    }
-
-                    board.movePiece(piece, to);
-                    player.setTurn(false);
+                    System.out.print("That is not your " + piece.getName());
                 }
             }
-
-
-
-
+            else
+            {
+                System.out.println("There is no piece at " + from.toChess());
+            }
         }
     }
 
@@ -146,8 +162,6 @@ public class Game
 
         setPlayers(read, p1, p2);
         setColors(p1,p2);
-
-        board.getLetterMap();
 
         board.setPiece(new Tower("White", true), new Point("a1"));
         board.setPiece(new Tower("Black", false), new Point("h8"));

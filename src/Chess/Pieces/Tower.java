@@ -14,7 +14,16 @@ public class Tower extends Piece
 
     public Tower(String color, boolean direction)
     {
-        super(NAME, NAME.substring(0,1), color, direction);
+        super(NAME, color, direction);
+
+        char symbol;
+
+        if (color.toLowerCase().equals("white"))
+            symbol = '♖';
+        else
+            symbol = '♜';
+
+        setSymbol(symbol);
 
     }
 
@@ -22,8 +31,6 @@ public class Tower extends Piece
     {
         return x1 == x2 && y1 != y2;
     }
-
-
 
     public boolean isValidMove(Point to)
     {

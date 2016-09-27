@@ -46,6 +46,8 @@ public class Player
         return (color.toLowerCase().equals(piece.getColor().toLowerCase()));
     }
 
+
+
     //Could from be a piece object reference?
 //    public void movePiece(Board board, Point from, Point to)
 //    {

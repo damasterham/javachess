@@ -1,10 +1,7 @@
 
 package Chess;//
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 //Created by DaMasterHam on 09-09-2016.
 //
@@ -41,6 +38,24 @@ public class Point
     }
 
 
+    private Point getDiff(Point other)
+    {
+        return new Point(other.getX() - x, other.getY() - y);
+    }
+
+    private int getSteps(Point other)
+    {
+        if (other.getX() > other.getY())
+            return other.getX();
+        else
+            return other.getY();
+    }
+
+    private float getIncrement(int value, int steps)
+    {
+        return value / (float) steps;
+    }
+
     public int getX()
     {
         return x;
@@ -53,7 +68,7 @@ public class Point
 
     public void setX(char letter)
     {
-        this.x = LetterMap.get(letter);
+        this.x = CharIntMap.getIndex(letter);
     }
 
     public int getY()
@@ -61,14 +76,14 @@ public class Point
         return y;
     }
 
-       public void setY(int y)
+    public void setY(int y)
     {
         this.y = y;
     }
 
     public void setY(char letter)
     {
-        this.y = LetterMap.get(letter);
+        this.y = CharIntMap.getIndex(letter);
     }
 
 
@@ -98,25 +113,14 @@ public class Point
         return list;
     }
 
-
-
-    private Point getDiff(Point other)
+    public String toChess()
     {
-        return new Point(other.getX() - x, other.getY() - y);
+        return String.format("%s%d",CharIntMap.getChar(x), y+1);
     }
 
-    private int getSteps(Point other)
-    {
-        if (other.getX() > other.getY())
-            return other.getX();
-        else
-            return other.getY();
-    }
 
-    private float getIncrement(int value, int steps)
-    {
-        return value / (float) steps;
-    }
+
+
 //    public double getSlope(Point other)
 //    {
 //        return  (double)(other.getY() - y) / (double)(other.getX() - x);

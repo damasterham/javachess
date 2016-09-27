@@ -15,16 +15,15 @@ public abstract class Piece implements IMovable
 
     //private Board board;
     private String name;
-    private String symbol;
+    private char symbol;
     private boolean direction; // only for pawns
     private String color;
 
     protected Point point;
 
-    public Piece(String name, String symbol, String color, boolean direction)
+    public Piece(String name, String color, boolean direction)
     {
         this.name = name;
-        this.symbol = symbol;
         this.color = color;
         this.direction = direction;
 
@@ -56,12 +55,12 @@ public abstract class Piece implements IMovable
         this.name = name;
     }
 
-    public String getSymbol()
+    public char getSymbol()
     {
         return symbol;
     }
 
-    public void setSymbol(String symbol)
+    public void setSymbol(char symbol)
     {
         this.symbol = symbol;
     }
