@@ -16,34 +16,15 @@ public abstract class Piece implements IMovable
     //private Board board;
     private String name;
     private char symbol;
-    private boolean direction; // only for pawns
     private String color;
 
     protected Point point;
 
-    public Piece(String name, String color, boolean direction)
+    public Piece(String name, String color)
     {
         this.name = name;
         this.color = color;
-        this.direction = direction;
-
-
     }
-//
-//    public int findA(String text)
-//    {
-//        char a = 'A';
-//        int i = 0;
-//        while (i < text.length())
-//        {
-//            char letter = text.charAt(i);
-//            i++;
-//            if (letter == a)
-//                return i;
-//        }
-//
-//        return -1;
-//    }
 
     public String getName()
     {
@@ -63,16 +44,6 @@ public abstract class Piece implements IMovable
     public void setSymbol(char symbol)
     {
         this.symbol = symbol;
-    }
-
-    public boolean isDirection()
-    {
-        return direction;
-    }
-
-    public void setDirection(boolean direction)
-    {
-        this.direction = direction;
     }
 
     public String getColor()
