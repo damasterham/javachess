@@ -13,14 +13,30 @@ public class Board
     private static final int SIZE = 8;
 
     private Piece[][] grid;
-    private List<Piece> outOfPlay;
+    private List<Piece> removed;
 
     public Board()
     {
         this.grid = new Piece[SIZE][SIZE];
-        this.outOfPlay = new ArrayList<Piece>();
+        this.removed = new ArrayList<Piece>();
     }
 
+
+    public List<Piece> getRemoved()
+    {
+        return removed;
+    }
+
+    public String getOutOfPlay()
+    {
+        String result = "";
+
+        for (Piece p : removed)
+        {
+            result += p.getSymbol() + " ";
+        }
+        return result;
+    }
 
     public void setPiece(Piece piece, Point position)
     {
@@ -31,7 +47,7 @@ public class Board
 
     private void attack(Piece attacker, Piece defender)
     {
-        outOfPlay.add(defender);
+        removed.add(defender);
         setPiece(attacker, defender.getPosition());
     }
 
@@ -49,7 +65,7 @@ public class Board
 
     public Piece remove(Piece piece)
     {
-        outOfPlay.add(piece);
+        removed.add(piece);
         remove(piece.getPosition());
         return piece;
     }
@@ -101,6 +117,7 @@ public class Board
 
     public void print()
     {
+        // Prints top border
         System.out.print('╔');
         for (int i = 0; i < SIZE*2; i++)
         {
@@ -112,6 +129,7 @@ public class Board
         }
         System.out.println('╗');
 
+        // Prints Letteres
         System.out.print("║\u2003");
         for (int i = 0; i < CharIntMap.getSize(); i++)
         {
@@ -119,15 +137,25 @@ public class Board
         }
         System.out.println('║');
 
-
-        for (int i = 0; i < SIZE; i++)
+        // Prints Numbers and spaces
+        // Y
+        for (int i = 0; i < SIZE*2; i++)
         {
-            System.out.print("║ "+(i+1));
+            if ((i % 2) == 0)
+            {
+                System.out.print("║"+((i/2)+1));
+            }
+            else
+            {
+                System.out.print("╠═");
+            }
+
+            // X
             for (int j = 0; j < SIZE; j++)
             {
                 if ((i % 2) == 0)
                 {
-                    Piece p = getPiece(new Point(i,j));
+                    Piece p = getPiece(new Point(j,(i/2)));
                     if (p != null)
                         System.out.print(String.format("║%s",p.getSymbol()));
                     else
@@ -139,6 +167,20 @@ public class Board
                 }
             }
             System.out.println('║');
+        }
+    }
+    
+    public void printIndex()
+    {
+        // Y
+        for (int i = 0; i < SIZE; i++) 
+        {
+            // X
+            for (int j = 0; j < SIZE; j++)
+            {
+                System.out.print(i + "," + j +";");
+            }
+            System.out.println();
         }
     }
 }
