@@ -31,7 +31,7 @@ public class Point
         }
     }
 
-    public Point(int y, int x)
+    public Point(int x, int y)
     {
         this.y = y;
         this.x = x;
@@ -118,7 +118,10 @@ public class Point
         return String.format("%s%d",CharIntMap.getChar(x), y+1);
     }
 
-
+    public String toString()
+    {
+        return String.format("%d,%d",x,y);
+    }
 
 
 //    public double getSlope(Point other)
