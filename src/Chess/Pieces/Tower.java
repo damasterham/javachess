@@ -1,20 +1,16 @@
 package Chess.Pieces;//
 
-import Chess.Board;
 import Chess.Point;
-import sun.text.CodePointIterator;
-
-import java.util.List;
 
 //Created by DaMasterHam on 20-09-2016.
 //
 public class Tower extends Piece
 {
-    private static final String NAME = "Tower";
+    private static final String NAME = "Rook";
 
-    public Tower(String color, boolean direction)
+    public Tower(String color)
     {
-        super(NAME, color, direction);
+        super(NAME, color);
 
         char symbol;
 
