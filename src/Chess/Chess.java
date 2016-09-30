@@ -6,13 +6,25 @@ import Chess.Pieces.Tower;
 
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.function.BooleanSupplier;
 
 //Created by DaMasterHam on 08-09-2016.
 //
 public class Chess
 {
+    private IChessMethods chessMethods;
+    private Board board  = new Board();
+    private Player p1 = new Player();
+    private Player p2 = new Player();
 
+    public Chess(IChessMethods chessMethods)
+    {
+        this.chessMethods = chessMethods;
+        board = new Board();
+        p1 = new Player();
+        p2 = new Player();
+    }
+
+    // Deprecated
     private static void promptEnterKey(){
         try
         {
@@ -24,6 +36,7 @@ public class Chess
         }
     }
 
+    // Deprecated but not moved
     private static void printHelp()
     {
         System.out.println();
@@ -37,33 +50,14 @@ public class Chess
         System.out.println("\"turn\" to remind you whom's turn it is");
     }
 
+    // Deprecated
     private static void printTurn(Player player)
     {
         System.out.println();
         System.out.println("It's " + player.getName() + "'s turn");
     }
 
-    private static void setPlayers(Scanner read, Player p1, Player p2)
-    {
-        p1.setName("Rick");
-        p2.setName("Morty");
 
-        while (p1.getName() == null || p2.getName() == null)
-        {
-            System.out.print("Player 1: ");
-            if (read.hasNext())
-            {
-                p1.setName(read.next());
-            }
-            System.out.println();
-            System.out.print("Player 2: ");
-            if (read.hasNext())
-            {
-                p2.setName(read.next());
-            }
-            System.out.println();
-        }
-    }
 
 
     private static void setColors(Player p1, Player p2)
@@ -82,41 +76,7 @@ public class Chess
         System.out.println(p1.getName() + " is " + p1.getColor() + " & " + p2.getName() + " is " + p2.getColor());
     }
 
-    private static void command(Scanner read, Player player, Board board)
-    {
-        String[] commands;
 
-        player.newMove();
-
-        while (player.moveFrom() == null  && player.moveTo() == null)
-        {
-            if (read.hasNextLine()) {
-                commands = read.nextLine().split(" ");
-
-                if (commands.length == 2) {
-                    Point from = new Point(commands[0]);// can be validated?
-                    Point to = new Point(commands[1]);// can be validated?
-
-                    player.moveFrom(from);
-                    player.moveTo(to);
-                }
-                else
-                {
-                    if (commands.length == 1)
-                    {
-                        String command = commands[0].toLowerCase();
-
-                        switch (command)
-                        {
-                            case "help": printHelp(); break;
-                            case "board": board.print(); break;
-                            case "turn": printTurn(player);
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     //Deprecated
     private static Point desiredMove(Player player, Scanner read, Point to, Piece piece)
@@ -148,13 +108,15 @@ public class Chess
         return from;
     }
 
+    private static void initilizeBoard()
+    {
+        // set all pieces into board
+    }
+
 
     // Checkmate check should be included
-    private static void playerTurn(Player player, Board board, Scanner read)
+    private static void playerTurn(Player player, Board board, IChessMethods chessMethods)
     {
-        // Shows the current board and tells whos turn it is
-        System.out.println(player.getName() + "'s turn");
-
         // Loops whilst it is the players turn
         while (player.isTurn())
         {
@@ -162,15 +124,8 @@ public class Chess
             //Point to = null; // Replaced by player.move
             Piece piece = null;
 
-// This can be shortcutted to one read command
-            // as in: a1 a2
-            // get move
-
-            System.out.print("Your move (from to):");
-            command(read,player, board);
-
-            // Select a s
-            //from = desiredPick(read);
+            //command(read,player, board);
+            chessMethods.requestPlayerMove(player);
 
             // Get piece from point
             piece = board.getPiece(player.moveFrom());
@@ -181,16 +136,14 @@ public class Chess
                 // and if that piece is owned by the player
                 if (player.owns(piece))
                 {
-                    // Get for desired move
-                    //to = desiredMove(player, read, to, piece); //Replaced by command
-
                     // The desired moved is within the movement restrictions of the piece
-                    if (piece.isValidMove(player.moveTo())) {
+                    if (piece.isValidMove(player.moveTo()))
+                    {
                         // Checks each point between the piece and desired position
-                        if (board.isObstructed(piece, player.moveTo())) {
+                        if (board.isObstructed(piece, player.moveTo()))
+                        {
                             // If obstructed, Cannot move
-                            System.out.println("There are pieces in the way,"
-                                    + "you cannot move to this position");
+                            chessMethods.moveObstructed();
                         }
                         else
                         {
@@ -201,41 +154,36 @@ public class Chess
                                 // And that piece is owned by the player
                                 if (player.owns(defender)) {
 
-                                    System.out.println("Your " + defender.getName() + " is in that spot");
+                                    chessMethods.ownPiecePresent(defender);
                                 }
                                 // If owned by the Opponent
                                 else {
                                     // Remove the piece from play
+                                    chessMethods.attackSuccess(defender);
                                     board.remove(defender);
-                                    System.out.println("You took " + defender.getName()
-                                            + " at " + defender.getPosition().toChess());
                                 }
                             }
 
                             // Lastly the player piece is moved to the desired positon
+
+                            //chessMethods.renderBoard(board);
+
                             board.movePiece(piece, player.moveTo());
-                            board.print();
+                            chessMethods.pieceMoved(piece);
 
-                            // Tells you which piece you took at which position
-                            System.out.println("You took your " + piece.getName() + " at " + piece.getPosition().toChess());
 
-                            System.out.println("You moved you " + piece.getName() + " to " + piece.getPosition().toChess());
                             // And it is no longer the players turn
                             player.endTurn();
 
-                            System.out.println("Out of play: " + board.getOutOfPlay());
+                            chessMethods.endTurn();
 
-                            System.out.println("End turn...");
-
-
-                            promptEnterKey();
-                            System.out.println("-----------------------------------------");
-
+                            // render board?
                         }
                     }
                     else
                     {
-                        System.out.println("You cannot move your " + piece.getName() + " there");
+                        // Invalid move by piece rules
+                        chessMethods.invalidPieceMove(piece);
                     }
                 }
                 else
@@ -243,43 +191,55 @@ public class Chess
                     // if player is added as a reference in Piece
                     // you can reference the other player via the Piece
                     // it could also be used as comparison instead of comparing colors
-                    System.out.println("That is not your " + piece.getName());
+                    chessMethods.notOwnedPiece(piece);
                 }
             }
             else
             {
-                System.out.println("There is no piece at " + player.moveFrom().toChess()); //+ player.moveFrom().toChess());
+                chessMethods.noPieceToSelect(player);
             }
         }
     }
 
 
-    public static void main(String[] args)
+    public void start()
     {
-        Board board  = new Board();
-        Scanner read = new Scanner(System.in);
-        Player p1 = new Player();
-        Player p2 = new Player();
-        boolean turn = true;
+        chessMethods.setPlayers(p1,p2);
 
-        setPlayers(read, p1, p2);
-        setColors(p1,p2);
+//        initilizeBoard(); // should be a method in board
+        chessMethods.initializeBoard(board); // could possibly run renderboard
 
-        board.setPiece(new Tower("White"), new Point("a1"));
-        board.setPiece(new Tower("Black"), new Point("h8"));
-        board.setPiece(new Bishop("White"), new Point("h2"));
+        // this is psuedo init
+//        board.setPiece(new Tower("White"), new Point("a1"));
+//        board.setPiece(new Tower("Black"), new Point("h8"));
+//        board.setPiece(new Bishop("White"), new Point("h2"));
 
-        board.printIndex();
-        board.print();
-        System.out.println("-----------------------------------------\n");
+//        chessMethods.renderBoard(board);
+
+        //System.out.println("-----------------------------------------\n");
+//Some chessmethod? maybe initializeBoard();
+
+        // Checks if player 1 is white
+        if (p1.getColor().equals("white"))
+        {
+            // if he is it will display and start his turn
+            chessMethods.displayTurn(p1);
+            p1.startTurn();
+        }
+        else
+        {   //otherwise it is the other player that is white
+            // and his turn is displayed
+            // though we skip starting his turn as it will be when p1 turn is passed over
+            chessMethods.displayTurn(p2);
+        }
 
         int i = 0;
-        while (i < 5)
+        while (i < 5) // the true test if is both kings are in play and not checkmate
         {
-            p1.startTurn();
-            playerTurn(p1,board,read);
+            playerTurn(p1, board, chessMethods); // is initially passed if p1 is not white
             p2.startTurn();
-            playerTurn(p2,board,read);
+            playerTurn(p2, board,chessMethods);
+            p1.startTurn();
 
             i++;
         }
