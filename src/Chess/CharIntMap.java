@@ -9,14 +9,14 @@ public class CharIntMap
 {
     private static final int SIZE = 8;
 
-    public static char getChar(int i)
+    public static char  getChar(int i)
     {
         if (i >= 0 && i < SIZE)
             return (char)(97 + i);
         return 0;
     }
 
-    public static int getIndex(char ch)
+    public static int   getIndex(char ch)
     {
         if (ch <= 'h' && ch >='a')
             return ch - 'a';
@@ -25,7 +25,7 @@ public class CharIntMap
         return -1;
     }
 
-    public static int getSize()
+    public static int   getSize()
     {
         return SIZE;
     }
