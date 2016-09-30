@@ -3,12 +3,10 @@ package Chess.Pieces;
 //Created by DaMasterHam on 08-09-2016.
 //
 
-import Chess.Board;
-import Chess.IMovable;
 import Chess.Point;
 
 // P, T, B, H, K ,Q
-public abstract class Piece implements IMovable
+public abstract class Piece
 {
     private static final String WHITE = "white";
     private static final String BLACK = "black";
@@ -17,7 +15,6 @@ public abstract class Piece implements IMovable
     private String name;
     private char symbol;
     private String color;
-
     protected Point point;
 
     public Piece(String name, String color)
@@ -26,49 +23,55 @@ public abstract class Piece implements IMovable
         this.color = color;
     }
 
-    public String getName()
+    // Accessors
+    public String   getName()
     {
         return name;
     }
 
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-    public char getSymbol()
+    public char     getSymbol()
     {
         return symbol;
     }
 
-    public void setSymbol(char symbol)
-    {
-        this.symbol = symbol;
-    }
-
-    public String getColor()
+    public String   getColor()
     {
         return color;
     }
 
-    public void setColor(String color)
+    public Point    getPosition()
+    {
+        return point;
+    }
+
+    // Mutators
+    public void     setName(String name)
+    {
+        this.name = name;
+    }
+
+    public void     setSymbol(char symbol)
+    {
+        this.symbol = symbol;
+    }
+
+    public void     setColor(String color)
     {
         this.color = color;
     }
 
-    public void setPosition(int x, int y)
+    public void     setPosition(Point point)
+    {
+        this.point = point;
+    }
+
+    public void     setPosition(int x, int y)
     {
         this.point.setX(x);
         this.point.setY(y);
     }
 
-    public void setPosition(Point point)
-    {
-        this.point = point;
-    }
+    // Abstract Accessors
+    public abstract boolean isValidMove(Point to);
 
-    public Point getPosition()
-    {
-        return point;
-    }
 }
