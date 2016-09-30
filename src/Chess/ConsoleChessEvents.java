@@ -6,87 +6,30 @@ import java.util.Scanner;
 
 //Created by DaMasterHam on 29-09-2016.
 //
-public class ConsoleChessMethods implements IChessMethods
+public class ConsoleChessEvents implements IChessEvents
 {
     private Scanner read;
     private Board board;
-/*    private Player p1;
+    private Player p1;
     private Player p2;
     private Player currentPlayer;
-    private Piece currentPiece;*/
-    // Current player?
+    private Piece currentPiece;
 
-
-    public ConsoleChessMethods(Scanner read)
+    public ConsoleChessEvents(Scanner read)
     {
         this.read = read;
     }
 
-    public ConsoleChessMethods(Scanner read, Board board)
+    public ConsoleChessEvents(Scanner read, Board board, Player p1, Player p2)
     {
         this.read = read;
         this.board = board;
+        this.p1 = p1;
+        this.p2 = p2;
     }
 
-    // Initialization
-    public void setPlayers(Player p1, Player p2)
-    {
-        Random random = new Random();
-        int turn;
-
-        p1.setName("Rick");
-        p2.setName("Morty");
-
-        while (p1.getName() == null || p2.getName() == null)
-        {
-            System.out.print("Player 1: ");
-            if (read.hasNext())
-            {
-                p1.setName(read.next());
-            }
-            System.out.println();
-            System.out.print("Player 2: ");
-            if (read.hasNext())
-            {
-                p2.setName(read.next());
-            }
-            System.out.println();
-        }
-
-        turn = random.nextInt(1);
-
-        // Randomizez who starts
-        if (turn == 0)
-        {
-            p1.setColor("White");
-            p2.setColor("Black");
-        }
-        else
-        {
-            p2.setColor("White");
-            p1.setColor("Black");
-        }
-
-        System.out.println(p1.getName() + " is " + p1.getColor());
-        System.out.println(p2.getName() + " is " + p2.getColor());
-        System.out.println();
-    }
-
-    public void initializeBoard(Board board)
-    {
-        // Set all pieces via board initalize
-        board.initialize();
-
-        this.board = board;
-
-        // render board
-        renderBoard(this.board);
-    }
-
-    // All messages could be extracted as fields and properties
-
-
-    public void renderBoard(Board board)
+    // Internal rendering
+    private void renderBoard()
     {
 
         System.out.println("┉┉┉┉Black┉┉┉┉");
@@ -146,26 +89,84 @@ public class ConsoleChessMethods implements IChessMethods
         renderOutOfPlay(board);
     }
 
-    public void renderOutOfPlay(Board board)
+    private void renderOutOfPlay()
     {
         if (board.hasOutOfPlay())
             System.out.println("Out of play: " + board.getOutOfPlay());
     }
 
-    public void displayTurn(Player player)
+    // possibly also made as internal rendering
+    public void displayTurn()
     {
-        System.out.println(player.getColor() + "'s turn ┉ " + player.getName());
+        System.out.println(currentPlayer.getColor() + "'s turn ┉ " + currentPlayer.getName());
     }
 
-    public void requestPlayerMove(Player player)
+    // Initialization
+    public void setPlayers()
+    {
+        Random random = new Random();
+        int turn;
+
+        p1.setName("Rick");
+        p2.setName("Morty");
+
+        while (p1.getName() == null || p2.getName() == null)
+        {
+            System.out.print("Player 1: ");
+            if (read.hasNext())
+            {
+                p1.setName(read.next());
+            }
+            System.out.println();
+            System.out.print("Player 2: ");
+            if (read.hasNext())
+            {
+                p2.setName(read.next());
+            }
+            System.out.println();
+        }
+
+        turn = random.nextInt(1);
+
+        // Randomizez who starts
+        if (turn == 0)
+        {
+            p1.setColor("White");
+            p2.setColor("Black");
+        }
+        else
+        {
+            p2.setColor("White");
+            p1.setColor("Black");
+        }
+
+        System.out.println(p1.getName() + " is " + p1.getColor());
+        System.out.println(p2.getName() + " is " + p2.getColor());
+        System.out.println();
+    }
+
+    public void initializeBoard()
+    {
+        // Set all currentPieces via board initalize
+        board.initialize();
+
+        this.board = board;
+
+        // render board
+        renderBoard(this.board);
+    }
+
+
+    // Input event
+    public void requestPlayerMove()
     {
         String[] commands;
 
-        player.newMove();
+        currentPlayer.newMove();
 
         System.out.print("Your move (from to):");
 
-        while (player.moveFrom() == null  && player.moveTo() == null)
+        while (currentPlayer.moveFrom() == null  && currentPlayer.moveTo() == null)
         {
             if (read.hasNextLine()) {
                 commands = read.nextLine().split(" ");
@@ -174,8 +175,8 @@ public class ConsoleChessMethods implements IChessMethods
                     Point from = new Point(commands[0]);// can be validated?
                     Point to = new Point(commands[1]);// can be validated?
 
-                    player.moveFrom(from);
-                    player.moveTo(to);
+                    currentPlayer.moveFrom(from);
+                    currentPlayer.moveTo(to);
                 }
                 else
                 {
@@ -187,7 +188,7 @@ public class ConsoleChessMethods implements IChessMethods
                         {
 //                            case "help": printHelp(); break;
 //                            case "board": board.print(); break;
-//                            case "turn": printTurn(player);
+//                            case "turn": printTurn(currentPlayer);
                             default: break;
                         }
                     }
@@ -196,48 +197,62 @@ public class ConsoleChessMethods implements IChessMethods
         }
     }
 
+
+    // Fail events
     public void moveObstructed()
     {
-        System.out.println("There are pieces in the way,"
+        System.out.println("There are currentPieces in the way,"
                 + "you cannot move to this position");
     }
 
-    public void invalidPieceMove(Piece piece)
+    public void ownPiecePresent()
     {
-        System.out.println("You cannot move your " + piece.getName() + " there");
+        System.out.println("Your " + currentPiece.getName() + " is in that spot");
     }
 
-    public void notOwnedPiece(Piece piece)
+    public void invalidPieceMove()
     {
-        System.out.println("That is not your " + piece.getName());
+        System.out.println("You cannot move your " + currentPiece.getName() + " there");
     }
 
-    public void noPieceToSelect(Player player)
+    public void notOwnedPiece()
     {
-        System.out.println("There is no piece at " + player.moveFrom().toChess());
+        System.out.println("That is not your " + currentPiece.getName());
     }
 
-    public void ownPiecePresent(Piece piece)
+    public void noPieceToSelect()
     {
-        System.out.println("Your " + piece.getName() + " is in that spot");
+        System.out.println("There is no currentPiece at " + currentPlayer.moveFrom().toChess());
     }
 
-    public void attackSuccess(Piece piece)
+
+    // Success events
+    public void attackSuccess()
     {
-        System.out.println("You took " + piece.getName()
-                + " at " + piece.getPosition().toChess());
+        System.out.println("You took " + currentPiece.getName()
+                + " at " + currentPiece.getPosition().toChess());
 
     }
 
-    public void pieceMoved(Piece piece) // or just have player fields?
+    public void currentPieceMoved()
     {
         renderBoard(this.board);
 
-        // Tells you which piece you took at which position
-        System.out.println("You took your " + piece.getName() + " at ");
+        // Tells you which currentPiece you took at which position
+        System.out.println("You took your " + currentPiece.getName() + " at ");
 
-        System.out.println("You moved you " + piece.getName() + " to " + piece.getPosition().toChess());
+        System.out.println("You moved you " + currentPiece.getName() + " to " + currentPiece.getPosition().toChess());
 
+    }
+
+
+    // Other
+    public void startTurn() // Could also just take player as parameter
+    {
+        if (p1.isTurn())
+            currentPlayer = p1;
+        else if(p2.isTurn())
+            currentPlayer = p2;
     }
 
     public void endTurn()
@@ -245,4 +260,6 @@ public class ConsoleChessMethods implements IChessMethods
         System.out.println("End turn...");
         System.out.println("-----------------------------------------");
     }
+
+
 }

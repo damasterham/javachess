@@ -1,8 +1,6 @@
 package Chess;
 
-import Chess.Pieces.Bishop;
 import Chess.Pieces.Piece;
-import Chess.Pieces.Tower;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -11,14 +9,14 @@ import java.util.Scanner;
 //
 public class Chess
 {
-    private IChessMethods chessMethods;
+    private IChessEvents chessEvents;
     private Board board  = new Board();
     private Player p1 = new Player();
     private Player p2 = new Player();
 
-    public Chess(IChessMethods chessMethods)
+    public Chess(IChessEvents chessMethods)
     {
-        this.chessMethods = chessMethods;
+        this.chessEvents = chessMethods;
         board = new Board();
         p1 = new Player();
         p2 = new Player();
@@ -115,20 +113,26 @@ public class Chess
 
 
     // Checkmate check should be included
-    private static void playerTurn(Player player, Board board, IChessMethods chessMethods)
+    private static void playerTurn(Player player, Board board, IChessEvents chessMethods)
     {
+        chessMethods.startTurn();
+
         // Loops whilst it is the players turn
         while (player.isTurn())
         {
+            chessMethods.turnLoopBegining();
             //Point from = null; // Replaced by player.move
             //Point to = null; // Replaced by player.move
-            Piece piece = null;
+
+            // Moved to player
+            //Piece piece = null;
 
             //command(read,player, board);
-            chessMethods.requestPlayerMove(player);
+            chessMethods.requestPlayerMove();
 
             // Get piece from point
             piece = board.getPiece(player.moveFrom());
+            chessMethods.setCurrentPiece(piece);
 
             // Check if there is piece
             if (piece != null)
@@ -166,7 +170,7 @@ public class Chess
 
                             // Lastly the player piece is moved to the desired positon
 
-                            //chessMethods.renderBoard(board);
+                            //chessEvents.renderBoard(board);
 
                             board.movePiece(piece, player.moveTo());
                             chessMethods.pieceMoved(piece);
@@ -204,17 +208,17 @@ public class Chess
 
     public void start()
     {
-        chessMethods.setPlayers(p1,p2);
+        chessEvents.setPlayers(p1,p2);
 
 //        initilizeBoard(); // should be a method in board
-        chessMethods.initializeBoard(board); // could possibly run renderboard
+        chessEvents.initializeBoard(board); // could possibly run renderboard
 
         // this is psuedo init
 //        board.setPiece(new Tower("White"), new Point("a1"));
 //        board.setPiece(new Tower("Black"), new Point("h8"));
 //        board.setPiece(new Bishop("White"), new Point("h2"));
 
-//        chessMethods.renderBoard(board);
+//        chessEvents.renderBoard(board);
 
         //System.out.println("-----------------------------------------\n");
 //Some chessmethod? maybe initializeBoard();
@@ -223,22 +227,22 @@ public class Chess
         if (p1.getColor().equals("white"))
         {
             // if he is it will display and start his turn
-            chessMethods.displayTurn(p1);
+            chessEvents.displayTurn(p1);
             p1.startTurn();
         }
         else
         {   //otherwise it is the other player that is white
             // and his turn is displayed
             // though we skip starting his turn as it will be when p1 turn is passed over
-            chessMethods.displayTurn(p2);
+            chessEvents.displayTurn(p2);
         }
 
         int i = 0;
         while (i < 5) // the true test if is both kings are in play and not checkmate
         {
-            playerTurn(p1, board, chessMethods); // is initially passed if p1 is not white
+            playerTurn(p1, board, chessEvents); // is initially passed if p1 is not white
             p2.startTurn();
-            playerTurn(p2, board,chessMethods);
+            playerTurn(p2, board, chessEvents);
             p1.startTurn();
 
             i++;

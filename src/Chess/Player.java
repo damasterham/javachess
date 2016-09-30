@@ -13,6 +13,7 @@ public class Player
     private String color;
     private boolean turn;
     private Move move;
+    private Piece currentPiece;
     private List<Move> pastMoves;
 
     public Player()
@@ -40,6 +41,11 @@ public class Player
     public Move         getMove()
     {
         return move;
+    }
+
+    public Piece getCurrentPiecePiece()
+    {
+        return currentPiece;
     }
 
     public Point        moveFrom()
