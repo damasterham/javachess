@@ -7,14 +7,14 @@ import java.util.Scanner;
 
 //Created by DaMasterHam on 08-09-2016.
 //
-public class Chess
+public class Game
 {
     private IChessEvents chessEvents;
     private Board board  = new Board();
     private Player p1 = new Player();
     private Player p2 = new Player();
 
-    public Chess(IChessEvents chessMethods)
+    public Game(IChessEvents chessMethods)
     {
         this.chessEvents = chessMethods;
         board = new Board();

@@ -1,6 +1,6 @@
 //package Chess.Pieces;//
 //
-//import Chess.Point;
+//import Game.Point;
 //
 ////Created by DaMasterHam on 09-09-2016.
 ////

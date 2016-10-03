@@ -13,7 +13,7 @@ public class ConsoleChessEvents implements IChessEvents
     private Player p1;
     private Player p2;
     private Player currentPlayer;
-    private Piece currentPiece;
+    //private Piece currentPiece;
 
     public ConsoleChessEvents(Scanner read)
     {
@@ -207,17 +207,17 @@ public class ConsoleChessEvents implements IChessEvents
 
     public void ownPiecePresent()
     {
-        System.out.println("Your " + currentPiece.getName() + " is in that spot");
+        System.out.println("Your " + currentPlayer.getCurrentPiece().getName() + " is in that spot");
     }
 
     public void invalidPieceMove()
     {
-        System.out.println("You cannot move your " + currentPiece.getName() + " there");
+        System.out.println("You cannot move your " + currentPlayer.getCurrentPiece().getName() + " there");
     }
 
     public void notOwnedPiece()
     {
-        System.out.println("That is not your " + currentPiece.getName());
+        System.out.println("That is not your " + currentPlayer.getCurrentPiece().getName());
     }
 
     public void noPieceToSelect()
@@ -229,19 +229,19 @@ public class ConsoleChessEvents implements IChessEvents
     // Success events
     public void attackSuccess()
     {
-        System.out.println("You took " + currentPiece.getName()
-                + " at " + currentPiece.getPosition().toChess());
+        System.out.println("You took " + currentPlayer.getCurrentPiece().getName()
+                + " at " + currentPlayer.getCurrentPiece().getPosition().toChess());
 
     }
 
     public void currentPieceMoved()
     {
-        renderBoard(this.board);
+        renderBoard();
 
         // Tells you which currentPiece you took at which position
-        System.out.println("You took your " + currentPiece.getName() + " at ");
+        System.out.println("You took your " + currentPlayer.getCurrentPiece().getName() + " at ");
 
-        System.out.println("You moved you " + currentPiece.getName() + " to " + currentPiece.getPosition().toChess());
+        System.out.println("You moved you " + currentPlayer.getCurrentPiece().getName() + " to " + currentPlayer.getCurrentPiece().getPosition().toChess());
 
     }
 

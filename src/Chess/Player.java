@@ -43,7 +43,7 @@ public class Player
         return move;
     }
 
-    public Piece getCurrentPiecePiece()
+    public Piece        getCurrentPiece()
     {
         return currentPiece;
     }
@@ -90,6 +90,11 @@ public class Player
         pastMoves.add(move);
         move = null;
         turn = false;
+    }
+
+    public void         setCurrentPiece(Piece piece)
+    {
+        this.currentPiece = piece;
     }
 
     public void         setMove(Move move)
