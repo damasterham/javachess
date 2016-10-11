@@ -1,14 +1,14 @@
 package Chess;//
 
-import Chess.Pieces.Piece;
-
-import java.util.List;
+import Chess.Scene.Board;
+import Chess.Scene.Player;
 
 //Created by DaMasterHam on 29-09-2016.
 //
 public interface IChessEvents
 {
     // initialization
+    void injectGameElements(Board board, Player p1, Player p2);
     void setPlayers();
     void initializeBoard();
 
@@ -22,7 +22,7 @@ public interface IChessEvents
 
     // Errors events
     void moveObstructed();
-    void ownPiecePresent();
+    void attackingOwnPiece();
     void invalidPieceMove();
     void notOwnedPiece();
     void noPieceToSelect();
@@ -33,5 +33,6 @@ public interface IChessEvents
 
     // Other
     void startTurn();
+    void turnLoopStart();
     void endTurn();
 }

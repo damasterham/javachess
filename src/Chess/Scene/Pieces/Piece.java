@@ -1,9 +1,9 @@
-package Chess.Pieces;
+package Chess.Scene.Pieces;
 
 //Created by DaMasterHam on 08-09-2016.
 //
 
-import Chess.Point;
+import Chess.Attributes.Point;
 
 // P, T, B, H, K ,Q
 public abstract class Piece

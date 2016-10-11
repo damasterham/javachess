@@ -1,6 +1,8 @@
-package Chess;//
+package Chess.Scene;//
 
-import Chess.Pieces.Piece;
+import Chess.Attributes.Move;
+import Chess.Attributes.Point;
+import Chess.Scene.Pieces.Piece;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +50,7 @@ public class Player
         return currentPiece;
     }
 
-    public Point        moveFrom()
+    public Point moveFrom()
     {
         return move.getFrom();
     }
@@ -61,6 +63,11 @@ public class Player
     public boolean      owns(Piece piece)
     {
         return (color.toLowerCase().equals(piece.getColor().toLowerCase()));
+    }
+
+    public boolean      ownsCurrentPiece()
+    {
+        return          owns(currentPiece);
     }
 
     public List<Move>   getPastMoves()
@@ -120,6 +127,11 @@ public class Player
     public void         moveTo(Point to)
     {
         move.setTo(to);
+    }
+
+    public void         getPiece(Board board)
+    {
+        currentPiece = board.getPiece(moveFrom());
     }
 
 

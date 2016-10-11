@@ -1,5 +1,7 @@
 
-package Chess;//
+package Chess.Attributes;//
+
+import Chess.CharIntMap;
 
 import java.util.*;
 
@@ -85,7 +87,7 @@ public class Point
         xInc = (int)getIncrement(diff.getX(),steps);
         yInc = (int)getIncrement(diff.getY(),steps);
 
-        for (int i = 0; i < steps; i++)
+        for (int i = 0; i < steps - 1; i++) // -1 to remove last point check
         {
             x += xInc;
             y += yInc;

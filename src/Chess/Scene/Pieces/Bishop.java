@@ -1,6 +1,6 @@
-package Chess.Pieces;//
+package Chess.Scene.Pieces;//
 
-import Chess.Point;
+import Chess.Attributes.Point;
 
 //Created by DaMasterHam on 27-09-2016.
 //

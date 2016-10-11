@@ -1,4 +1,4 @@
-//package Chess.Pieces;//
+//package Chess.Scene.Pieces;//
 //
 //import Game.Point;
 //

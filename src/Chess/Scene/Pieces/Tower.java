@@ -1,6 +1,6 @@
-package Chess.Pieces;//
+package Chess.Scene.Pieces;//
 
-import Chess.Point;
+import Chess.Attributes.Point;
 
 //Created by DaMasterHam on 20-09-2016.
 //
@@ -34,6 +34,7 @@ public class Tower extends Piece
                 || onlyOneDiffAxis(to.getY(), point.getY(), to.getX(), point.getX());
         //return ((to.getX() == point.getX() && to.getY() != point.getY()) || (to.getY() == point.getY() &&  to.getX() != point.getX()));
     }
+
 //    public boolean move(Point to, Board board)
 //    {
 //        // Checks

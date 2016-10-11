@@ -1,7 +1,8 @@
-package Chess;
+package Chess.Scene;
 
-import Chess.Pieces.Piece;
-import Chess.Pieces.Tower;
+import Chess.Attributes.Point;
+import Chess.Scene.Pieces.Piece;
+import Chess.Scene.Pieces.Tower;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,11 @@ public class Board
     public List<Piece>  getRemoved()
     {
         return removed;
+    }
+
+    public Piece        getLastRemoved()
+    {
+        return removed.get(removed.size()-1);
     }
 
     public boolean      hasOutOfPlay()

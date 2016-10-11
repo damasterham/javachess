@@ -10,12 +10,11 @@ public class ConsoleGame
     public static void main(String[] args)
     {
         Scanner read;
-        Game.IChessEvents chessMethods;
+        IChessEvents chessMethods;
         Game game;
 
-
         read = new Scanner(System.in);
-        chessMethods = new Game.ConsoleChessEvents(read);
+        chessMethods = new ConsoleChessEvents(read);
         game = new Game(chessMethods);
 
         game.start();

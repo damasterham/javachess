@@ -1,4 +1,4 @@
-package Chess;//
+package Chess.Attributes;//
 
 //Created by DaMasterHam on 28-09-2016.
 //
