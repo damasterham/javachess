@@ -23,6 +23,7 @@ public interface IChessEvents
     // Errors events
     void moveObstructed();
     void attackingOwnPiece();
+    void invalidPlayerMove();
     void invalidPieceMove();
     void notOwnedPiece();
     void noPieceToSelect();

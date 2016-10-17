@@ -169,7 +169,7 @@ public class ConsoleChessEvents implements IChessEvents
     {
         // Set all currentPieces via board initalize
         board.initialize();
-
+        renderBoard();
         this.board = board;
 
         // render board
@@ -236,6 +236,11 @@ public class ConsoleChessEvents implements IChessEvents
         System.out.println("You cannot move your " + currentPlayer.getCurrentPiece().getName() + " there");
     }
 
+    public void invalidPlayerMove()
+    {
+        System.out.println("That is not a valid move");
+    }
+
     public void notOwnedPiece()
     {
         System.out.println("That is not your " + currentPlayer.getCurrentPiece().getName());
@@ -251,6 +256,8 @@ public class ConsoleChessEvents implements IChessEvents
     public void attackSuccess()
     {
         Piece attacked = board.getLastRemoved();
+
+        renderBoard();
 
         System.out.println("You took " + currentPlayer.getCurrentPiece().getName()
                 + " at " + currentPlayer.moveFrom().toChess()
@@ -275,7 +282,8 @@ public class ConsoleChessEvents implements IChessEvents
     // Other
     public void startTurn() // Could also just take player as parameter
     {
-        renderBoard();
+        currentPlayerSet();
+        displayTurn();
     }
 
     public void turnLoopStart()
@@ -288,6 +296,7 @@ public class ConsoleChessEvents implements IChessEvents
     {
         System.out.println("End turn...");
         System.out.println("-----------------------------------------");
+
     }
 
 

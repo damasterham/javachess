@@ -119,6 +119,8 @@ public class Player
         move = null;
     }
 
+    public void         clearPiece() { currentPiece = null; }
+
     public void         moveFrom(Point from)
     {
         move.setFrom(from);

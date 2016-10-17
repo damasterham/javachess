@@ -2,6 +2,7 @@ package Chess;
 
 import Chess.Attributes.Point;
 import Chess.Scene.Board;
+import Chess.Scene.Pieces.Knight;
 import Chess.Scene.Pieces.Piece;
 import Chess.Scene.Player;
 
@@ -19,6 +20,7 @@ public class Game
     private Board board  = new Board();
     private Player p1 = new Player();
     private Player p2 = new Player();
+    private Piece defender = null;
 
     public Game(IChessEvents chessMethods)
     {
@@ -119,20 +121,170 @@ public class Game
 
     private void playerTurn(Player player)
     {
+        // Start of turn
+        chessEvents.startTurn();
+        // Loop trying to make a valid play
+        while (player.isTurn())
+        {
+            // Ask for player input for move
+            chessEvents.requestPlayerMove();
+            // is it a valid input (within the boards indexes. alt command)
+            // Does the player have not have a move?
+            if (player.getMove() == null)
+            {
+                chessEvents.invalidPlayerMove();
+            }
+            else
+            {
+                // Is there not a piece?
+                if (!board.hasPiece(player.moveFrom()))
+                {
+                    chessEvents.noPieceToSelect();
+                }
+                // Or is there a piece?
+                else
+                {
+                    // Get the piece
+                    player.setCurrentPiece(board.getPiece(player.moveFrom()));
+
+                    // Is it not the players piece?
+                    if (!player.ownsCurrentPiece())
+                    {
+                        chessEvents.notOwnedPiece();
+                    }
+                    // Or is it his piece?
+                    else
+                    {
+                        // Is the move he's trying to make invalid for the selected piece?
+                        if (!player.getCurrentPiece().isValidMove(player.moveTo()))
+                        {
+                            chessEvents.invalidPieceMove();
+                        }
+                        // Or is it valid?
+                        else
+                        {
+                            // Is there an obstruction in the move
+                            if(!player.getCurrentPiece().ignoreObstacles() && board.isObstructed(player.getCurrentPiece(), player.moveTo()))
+                            {
+                                chessEvents.moveObstructed();
+                            }
+                            // Does it have apiece at the end of the move?
+                            else if (board.hasPiece(player.moveTo()))
+                            {
+                                Piece defender = board.getPiece(player.moveTo());
+
+                                // Is it your piece?
+                                if (player.owns(defender))
+                                {
+                                    chessEvents.attackingOwnPiece();
+                                }
+                                // Or is it the opponents?
+                                else
+                                {
+
+                                    // Remove opponents piece
+                                    board.remove(defender);
+                                    // Move your piece here!
+                                    board.movePiece(player.getCurrentPiece(), player.moveTo());
+
+                                    chessEvents.attackSuccess();
+
+                                    // End player turn
+                                    player.endTurn();
+
+                                }
+                            }
+                            // Or is it empty
+                            else
+                            {
+
+                                // Move the piece here!
+                                board.movePiece(player.getCurrentPiece(), player.moveTo());
+
+                                chessEvents.pieceMoved();
+
+                                // End player turn
+                                player.endTurn();
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void PlayerTurn(Player player)
+    {
         chessEvents.startTurn();
 
         while(player.isTurn())
         {
+            player.clearMove();
+            player.clearPiece();
+
             chessEvents.turnLoopStart();
 
-            chessEvents.requestPlayerMove();
+            chessEvents.requestPlayerMove(); // could just meld these 2 methods into 1
 
+            // Invalid move
             if (player.getMove() == null)
+            {
+                chessEvents.invalidPieceMove();
                 break;
+            }
 
-            player.getPiece(board);
 
-            if (player.get)
+            // No piece at movefrom position
+            if (!board.hasPiece(player.moveFrom()))
+            {
+                chessEvents.noPieceToSelect();
+                break;
+            }
+            // If there is a piece
+            else
+            {
+                player.getPiece(board);
+
+                // Is it NOT your piece?
+                if (!player.ownsCurrentPiece())
+                {
+                    chessEvents.notOwnedPiece();
+                    break;
+                }
+            }
+
+            // Is not a valid a move
+            if (player.getCurrentPiece().isValidMove(player.moveTo()))
+            {
+                chessEvents.invalidPieceMove();
+                break;
+            }
+
+            // And is obstructed
+            if (board.isObstructed(player.getCurrentPiece(), player.moveTo()))
+            {
+                chessEvents.moveObstructed();
+                break;
+            }
+
+            // Is there another piece at the desired moveto postion?
+            if (board.hasPiece(player.moveTo()))
+            {
+                defender = board.getPiece(player.moveTo());
+
+                // Is it your own?
+                if (player.owns(defender))
+                {
+                    chessEvents.attackingOwnPiece();
+                    break;
+                }
+                // Its the opponents piece
+                else
+                {
+                    chessEvents.attackSuccess();
+                }
+            }
 
         }
     }
@@ -236,7 +388,6 @@ public class Game
 
         chessEvents.setPlayers();
 
-//        initilizeBoard(); // should be a method in board
         chessEvents.initializeBoard(); // could possibly run renderboard
 
         // this is psuedo init

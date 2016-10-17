@@ -16,6 +16,7 @@ public abstract class Piece
     private char symbol;
     private String color;
     protected Point point;
+    protected boolean ignoreObs = false;
 
     public Piece(String name, String color)
     {
@@ -42,6 +43,11 @@ public abstract class Piece
     public Point    getPosition()
     {
         return point;
+    }
+
+    public boolean  ignoreObstacles()
+    {
+        return ignoreObs;
     }
 
     // Mutators
