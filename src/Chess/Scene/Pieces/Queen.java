@@ -18,6 +18,22 @@ public class Queen extends Piece
             symbol = '♕';
         else
             symbol = '♛';
+
+        setSymbol(symbol);
+    }
+
+    public Queen(String color, int x, int y)
+    {
+        super(NAME,color, x, y);
+
+        char symbol;
+
+        if (color.toLowerCase().equals("white"))
+            symbol = '♕';
+        else
+            symbol = '♛';
+
+        setSymbol(symbol);
     }
 
     private boolean onlyOneDiffAxis(int x1, int x2, int y1, int y2)

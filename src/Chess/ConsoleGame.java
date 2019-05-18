@@ -7,6 +7,8 @@ import java.util.Scanner;
 public class ConsoleGame
 {
 
+
+
     public static void main(String[] args)
     {
         Scanner read;

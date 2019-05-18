@@ -3,6 +3,7 @@ package Chess;
 import Chess.Attributes.Point;
 import Chess.Scene.Board;
 import Chess.Scene.Pieces.Knight;
+import Chess.Scene.Pieces.Pawn;
 import Chess.Scene.Pieces.Piece;
 import Chess.Scene.Player;
 
@@ -15,7 +16,7 @@ public class Game
 {
 
     // Perhaps singleton?
-
+    private boolean gameComencing;
     private IChessEvents chessEvents;
     private Board board  = new Board();
     private Player p1 = new Player();
@@ -119,6 +120,34 @@ public class Game
         // set all pieces into board
     }
 
+    private boolean checkWinConditions()
+    {
+        return !(board.hasOutOfPlay() && board.kingJustDied() || board.checkMate());
+    }
+
+    private void successfullMove(Player player)
+    {
+        // Move the piece here!
+        board.movePiece(player.getCurrentPiece(), player.moveTo());
+
+        chessEvents.pieceMoved();
+
+        // End player turn
+        player.endTurn();
+    }
+
+    private void successfullAttack(Player player, Piece defender)
+    {
+        // Remove opponents piece
+        board.remove(defender);
+        // Move your piece here!
+        board.movePiece(player.getCurrentPiece(), player.moveTo());
+
+        chessEvents.attackSuccess();
+        // End player turn
+        player.endTurn();
+    }
+
     private void playerTurn(Player player)
     {
         // Start of turn
@@ -168,7 +197,7 @@ public class Game
                             {
                                 chessEvents.moveObstructed();
                             }
-                            // Does it have apiece at the end of the move?
+                            // Does it have a piece at the end of the move?
                             else if (board.hasPiece(player.moveTo()))
                             {
                                 Piece defender = board.getPiece(player.moveTo());
@@ -182,37 +211,57 @@ public class Game
                                 else
                                 {
 
-                                    // Remove opponents piece
-                                    board.remove(defender);
-                                    // Move your piece here!
-                                    board.movePiece(player.getCurrentPiece(), player.moveTo());
+                                    if (player.getCurrentPiece() instanceof Pawn)
+                                    {
+                                        Pawn piece = (Pawn)player.getCurrentPiece();
 
-                                    chessEvents.attackSuccess();
-
-                                    // End player turn
-                                    player.endTurn();
+                                        if (piece.isValidAttack())
+                                        {
+                                            successfullAttack(player, defender);
+                                        }
+                                        else
+                                        {
+                                            chessEvents.invalidPieceMove();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        successfullAttack(player, defender);
+                                    }
 
                                 }
                             }
                             // Or is it empty
                             else
                             {
-
-                                // Move the piece here!
-                                board.movePiece(player.getCurrentPiece(), player.moveTo());
-
-                                chessEvents.pieceMoved();
-
-                                // End player turn
-                                player.endTurn();
+                                if (player.getCurrentPiece() instanceof Pawn)
+                                {
+                                    Pawn piece = (Pawn)player.getCurrentPiece();
+                                    if (piece.isValidAttack())
+                                    {
+                                        chessEvents.invalidPieceMove();
+                                    }
+                                    else
+                                    {
+                                        successfullMove(player);
+                                    }
+                                }
+                                else
+                                {
+                                    successfullMove(player);
+                                }
 
                             }
+
                         }
                     }
                 }
             }
         }
     }
+
+
+
 
     private void PlayerTurn(Player player)
     {
@@ -381,9 +430,19 @@ public class Game
         }
     }
 
+    private void playerSwitch(Player currentPlayer, Player nextPlayer) {
+        if (gameComencing)
+        {
+            playerTurn(currentPlayer);
+            gameComencing = checkWinConditions();
+            nextPlayer.startTurn();
+        }
+    }
 
     public void start()
     {
+        gameComencing = true;
+
         chessEvents.injectGameElements(board, p1, p2);
 
         chessEvents.setPlayers();
@@ -401,7 +460,7 @@ public class Game
 //Some chessmethod? maybe initializeBoard();
 
         // Checks if player 1 is white
-        /*if (p1.getColor().equals("white"))
+        /*if (p1.getColoar().equals("white"))
         {
             // if he is it will display and start his turn
             p1.startTurn();
@@ -413,20 +472,14 @@ public class Game
 //
 //        }
 
-        int i = 0;
-        while (i < 5) // the true test if is both kings are in play and not checkmate
+        while (gameComencing) // the true test if is both kings are in play and not checkmate
         {
-            playerTurn(p1); // is initially passed if p1 is not white
-            p2.startTurn();
-            playerTurn(p2);
-            p1.startTurn();
-
-            i++;
+            playerSwitch(p1,p2);
+            playerSwitch(p2,p1);
         }
 
-
-
-
-
+        chessEvents.gameOver();
     }
+
+
 }

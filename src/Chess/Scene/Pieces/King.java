@@ -18,6 +18,22 @@ public class King extends Piece
             symbol = '♔';
         else
             symbol = '♚';
+
+        setSymbol(symbol);
+    }
+
+    public King(String color, int x, int y)
+    {
+        super(NAME,color, x, y);
+
+        char symbol;
+
+        if (color.toLowerCase().equals("white"))
+            symbol = '♔';
+        else
+            symbol = '♚';
+
+        setSymbol(symbol);
     }
 
     private boolean zeroOneRange(int a)

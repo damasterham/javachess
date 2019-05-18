@@ -24,6 +24,12 @@ public abstract class Piece
         this.color = color;
     }
 
+    public Piece (String name, String color, int x, int y)
+    {
+        this(name,color);
+        setPosition(x,y);
+    }
+
     // Accessors
     public String   getName()
     {
@@ -73,8 +79,13 @@ public abstract class Piece
 
     public void     setPosition(int x, int y)
     {
-        this.point.setX(x);
-        this.point.setY(y);
+        if (this.point == null)
+            this.point = new Point(x, y);
+        else
+        {
+            this.point.setX(x);
+            this.point.setY(y);
+        }
     }
 
     // Abstract Accessors

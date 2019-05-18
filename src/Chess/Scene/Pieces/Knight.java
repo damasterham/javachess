@@ -19,17 +19,34 @@ public class Knight extends Piece
             symbol = '♘';
         else
             symbol = '♞';
+
+        setSymbol(symbol);
+    }
+
+    public Knight(String color, int x, int y)
+    {
+        super(NAME,color,x,y);
+
+        char symbol;
+        ignoreObs = true;
+
+        if (color.toLowerCase().equals("white"))
+            symbol = '♘';
+        else
+            symbol = '♞';
+
+        setSymbol(symbol);
     }
 
     private boolean isPosOrNeg(int a, int pn)
     {
         return a == pn || a == -pn;
     }
-
+// dont work
     private boolean specificSpot(Point to)
     {
         int x = to.getX() - point.getX();
-        int y = to.getX() - point.getY();
+        int y = to.getY() - point.getY();
 
         return isPosOrNeg(x,2) && isPosOrNeg(y, 1) || isPosOrNeg(x, 1) && isPosOrNeg(y, 2);
     }

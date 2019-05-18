@@ -36,4 +36,5 @@ public interface IChessEvents
     void startTurn();
     void turnLoopStart();
     void endTurn();
+    void gameOver();
 }

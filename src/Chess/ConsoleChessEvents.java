@@ -119,6 +119,8 @@ public class ConsoleChessEvents implements IChessEvents
     {
         Random random = new Random();
         int turn;
+        p1.setName("Rick");
+        p2.setName("Morty");
 
 //        p1.setName("Rick");
 //        p2.setName("Morty");
@@ -297,6 +299,12 @@ public class ConsoleChessEvents implements IChessEvents
         System.out.println("End turn...");
         System.out.println("-----------------------------------------");
 
+    }
+
+    public void gameOver()
+    {
+        System.out.println("Game over!");
+        System.out.println(currentPlayer.getName() + " Won!");
     }
 
 
